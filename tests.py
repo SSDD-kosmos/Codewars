@@ -1,19 +1,46 @@
-# import bisect
-#
-#
-# def test():
-#     list_abc = [1, 2, 3, 4, 5]
-#     bisect.insort(list_abc, 2.23)
-#     print(list_abc)
-#
-#
-# test()
+import time
 
 
-# ---------------------
+class TimerContextManager:
+    def __init__(self):
+        self.start_time = None
+        self.end_time = None
 
-def solution(array):
-    return [number ** 2 if number >= 0 else -(number ** 2) for number in array]
+    def __enter__(self):
+        self.start_time = time.time()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.end_time = time.time()
+        execution_time = self.end_time - self.start_time
+        print(f"Время выполнения: {execution_time} сек.")
 
 
-solution([-3, 1, 2, 3])
+def timer_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        execution_time = end_time - start_time
+        print(f"Время выполнения: {execution_time} сек.")
+        return result
+    return wrapper
+
+
+# Пример использования класса TimerContextManager
+with TimerContextManager():
+    # Код, время выполнения которого нужно измерить
+    for i in range(1000000):
+        pass
+
+
+# Пример использования декоратора timer_decorator
+@timer_decorator
+def my_function():
+    # Код, время выполнения которого нужно измерить
+    for el in range(1000000):
+        pass
+
+
+my_function()
+
